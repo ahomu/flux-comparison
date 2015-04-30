@@ -19,16 +19,19 @@ export default class ProductStore extends Store {
     products$ = Bus.create();
 
     /**
-     * @type {Object<string, function>} dispatchReceiver
+     * @param {string} eventType
+     * @param {object} payload
      */
-    dispatchReceiver = {
-        [ActionTypes.RECEIVE_PRODUCTS] : (payload)=> {
-            this._products = payload.products;
-            this.products$.emit(this.getAllProducts());
-        },
-        [ActionTypes.ADD_TO_CART]      : (payload)=> {
-            this._decreaseInventory(payload.product);
-            this.products$.emit(this.getAllProducts());
+    storeReceiveDispatch(eventType, payload) {
+        switch (eventType) {
+            case ActionTypes.RECEIVE_PRODUCTS:
+                this._products = payload.products;
+                this.products$.emit(this.getAllProducts());
+                break;
+            case ActionTypes.ADD_TO_CART:
+                this._decreaseInventory(payload.product);
+                this.products$.emit(this.getAllProducts());
+                break;
         }
     };
 

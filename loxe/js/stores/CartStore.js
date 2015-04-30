@@ -27,26 +27,28 @@ export default class CartStore extends Store {
     /**
      * @type {Object<string, function>} dispatchReceiver
      */
-    dispatchReceiver = {
-        [ActionTypes.ADD_TO_CART]      : (payload)=> {
-            // TODO
-            //AppDispatcher.waitFor([ProductStore.dispatchToken]);
-            this. _addToCart(payload.product);
+    storeReceiveDispatch(eventType, payload) {
+        switch (eventType) {
+            case ActionTypes.ADD_TO_CART:
+                // TODO
+                //AppDispatcher.waitFor([ProductStore.dispatchToken]);
+                this. _addToCart(payload.product);
 
-            this.products$.emit(this.getAddedProducts());
-            this.total$.emit(this.getTotal());
-        },
-        [ActionTypes.CART_CHECKOUT]    : (payload)=> {
-            this._products = {};
+                this.products$.emit(this.getAddedProducts());
+                this.total$.emit(this.getTotal());
+                break;
+            case ActionTypes.CART_CHECKOUT:
+                this._products = {};
 
-            this.products$.emit(this.getAddedProducts());
-            this.total$.emit(this.getTotal());
-        },
-        [ActionTypes.SUCCESS_CHECKOUT] : (payload)=> {
-            // this can be used to redirect to success page, etc.
-            console.log('YOU BOUGHT:', payload.products);
+                this.products$.emit(this.getAddedProducts());
+                this.total$.emit(this.getTotal());
+                break;
+            case ActionTypes.SUCCESS_CHECKOUT:
+                // this can be used to redirect to success page, etc.
+                console.log('YOU BOUGHT:', payload.products);
+                break;
         }
-    };
+    }
 
     /**
      * @param {Object} product
