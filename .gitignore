@@ -10,5 +10,6 @@ alt/build/*.js
 mcfly/build/*.js
 marty/build/*.js
 flummox/build/*.js
+loxe/build/*.js
 lux/build/*.js
 material-flux/build/*.js
