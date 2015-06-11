@@ -1,7 +1,7 @@
 {
   "main": "js/app.js",
   "scripts": {
-    "start": "../node_modules/watchify/bin/cmd.js ./js/app.js -o build/bundle.js -v --extension=.jsx"
+    "start": "../node_modules/watchify/bin/cmd.js ./js/app.js -o build/bundle.js -dv --extension=.jsx"
   },
   "browserify": {
     "transform": [

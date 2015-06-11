@@ -1,20 +1,16 @@
 'use strict';
 
-import {Component, React, Bus, Bacon} from 'Loxe';
+import React from 'react';
+import {provideActions, provideObservables} from 'loxe';
 import ProductItem from '../../../common/components/ProductItem';
 import ProductsList from '../../../common/components/ProductsList';
-import AppConstants from '../constants/AppConstants';
+import AppAction from '../actions/AppAction';
 
-let {DomainEvents, ComponentEvents} = AppConstants;
-
-class ProductItemContainer extends Component {
-
-    observables = {
-        [ComponentEvents.newItem$] : Bus.create()
-    };
+@provideActions([ AppAction ])
+class ProductItemContainer extends React.Component {
 
     onAddToCartClicked() {
-        this.publish(ComponentEvents.newItem$, this.props.product);
+        this.props.AppAction.addToCart(this.props.product);
     }
 
     render() {
@@ -24,20 +20,17 @@ class ProductItemContainer extends Component {
     }
 }
 
-export default class ProductsListContainer extends Component {
+@provideObservables(observables => ({
+    products : observables.allProducts$
+}))
+class ProductsListContainer extends React.Component {
 
-    state = {
+    static defaultProps = {
         products : []
     };
 
-    componentWillReceiveObservables(observables) {
-        this.subscribe(Bacon.combineTemplate({
-            products : observables[DomainEvents.allProducts$]
-        }), this.setState.bind(this));
-    }
-
     render() {
-        var nodes = this.state.products.map(function (product) {
+        var nodes = this.props.products.map(function (product) {
             return <ProductItemContainer key={product.id} product={product} />;
         });
 
@@ -49,3 +42,5 @@ export default class ProductsListContainer extends Component {
     }
 
 }
+
+export default ProductsListContainer;

@@ -1,44 +1,39 @@
 'use strict';
 
-import {Component, React, Bus, Bacon} from 'Loxe';
+import React from 'react';
+import {Subject, provideActions, provideObservables} from 'loxe';
 import Cart from '../../../common/components/Cart';
-import AppConstants from '../constants/AppConstants';
+import AppAction from '../actions/AppAction'
 
-let {DomainEvents, ComponentEvents} = AppConstants;
+@provideActions([ AppAction ])
+@provideObservables(observables => ({
+    products : observables.cartProducts$,
+    total    : observables.cartTotal$.map((v) => v + '')
+}))
+class CartContainer extends React.Component {
 
-export default class CartContainer extends Component {
-
-    observables = {
-        [ComponentEvents.checkout$] : Bus.create()
-    };
-
-    state = {
+    static defaultProps = {
         products : [],
         total    : '0'
     };
 
-    componentWillReceiveObservables(observables) {
-        this.subscribe(Bacon.combineTemplate({
-            products : observables[DomainEvents.cartProducts$],
-            total    : observables[DomainEvents.cartTotal$].map((v) => v + '')
-        }), this.setState.bind(this));
-    }
-
     onCheckoutClicked() {
-        if (!this.state.products.length) {
+        if (!this.props.products.length) {
             return;
         }
-        this.publish(ComponentEvents.checkout$, this.state.products);
+        this.props.AppAction.cartCheckout(this.props.products);
     }
 
     render() {
         return (
             <Cart
-                products={this.state.products}
-                total={this.state.total}
+                products={this.props.products}
+                total={this.props.total}
                 onCheckoutClicked={this.onCheckoutClicked.bind(this)}
                 />
         );
     }
 
 }
+
+export default CartContainer;

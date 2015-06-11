@@ -1,22 +1,23 @@
 'use strict';
 
-import {React} from 'Loxe';
+import React from 'react';
+import Rx from 'rx-lite';
+import rxCombineTemplate from 'rx.observable.combinetemplate';
+import { Subject } from 'loxe';
+
 import App from './components/App';
 import AppDomain from './domains/AppDomain';
-import AppDomainUtils from './utils/AppDomainUtils';
-import AppIntent from './intents/AppIntent';
+import AppAction from './actions/AppAction';
 import CartStore from './stores/CartStore';
 import ProductStore from './stores/ProductStore';
 
+Subject.setBuilder(new Subject.RxBuilder(Rx));
+Subject.setCombineTemplate(rxCombineTemplate);
+
 let appDomain = new AppDomain();
 
-appDomain.addStore(new ProductStore());
-appDomain.addStore(new CartStore());
-appDomain.prepare();
+appDomain.registerStore(new ProductStore());
+appDomain.registerStore(new CartStore());
+appDomain.registerAction(new AppAction());
 
-AppDomainUtils.getAllProducts(appDomain);
-
-React.render(
-    React.createFactory(App)({domain : appDomain}),
-    document.getElementById('flux-app')
-);
+appDomain.mountRootComponent(App, document.getElementById('flux-app'));

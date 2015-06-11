@@ -1,10 +1,17 @@
 'use strict';
 
-import {Component, React} from 'Loxe';
+import React from 'react';
+import {provideContext, provideActions} from 'loxe';
 import CartContainer from './CartContainer';
 import ProductsContainer from './ProductsContainer';
+import AppAction from '../actions/AppAction';
 
-export default class App extends Component {
+@provideContext()
+@provideActions([ AppAction ])
+class App extends React.Component {
+    componentWillMount() {
+        this.props.AppAction.getAllProducts();
+    }
     render() {
         return (
             <div>
@@ -14,3 +21,5 @@ export default class App extends Component {
         );
     }
 }
+
+export default App;

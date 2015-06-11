@@ -1,6 +1,6 @@
 'use strict';
 
-import {Store, Bus} from 'Loxe';
+import {Store, Subject} from 'loxe';
 import AppConstants from '../constants/AppConstants';
 
 let ActionTypes = AppConstants.ActionTypes;
@@ -16,24 +16,23 @@ export default class ProductStore extends Store {
     /**
      * @type {Bus}
      */
-    products$ = Bus.create();
+    products$ = Subject.property(this.getAllProducts());
 
     /**
-     * @param {string} eventType
-     * @param {object} payload
      */
-    storeReceiveDispatch(eventType, payload) {
-        switch (eventType) {
-            case ActionTypes.RECEIVE_PRODUCTS:
-                this._products = payload.products;
-                this.products$.emit(this.getAllProducts());
-                break;
-            case ActionTypes.ADD_TO_CART:
-                this._decreaseInventory(payload.product);
-                this.products$.emit(this.getAllProducts());
-                break;
-        }
-    };
+    constructor() {
+        super();
+
+        this.subscribeEvent(ActionTypes.RECEIVE_PRODUCTS, (payload) => {
+            console.log(payload);
+            this._products = payload.products;
+            this.products$.next(this.getAllProducts());
+        });
+        this.subscribeEvent(ActionTypes.ADD_TO_CART, (payload) => {
+            this._decreaseInventory(payload.product);
+            this.products$.next(this.getAllProducts());
+        });
+    }
 
     /**
      * @param {Object} product

@@ -9,16 +9,6 @@ export default {
         ADD_TO_CART      : null,
         CART_CHECKOUT    : null,
         SUCCESS_CHECKOUT : null
-    }),
-
-    DomainEvents : keyMirror({
-        allProducts$  : null,
-        cartProducts$ : null,
-        cartTotal$    : null
-    }),
-
-    ComponentEvents : keyMirror({
-        newItem$  : null,
-        checkout$ : null
     })
+
 };

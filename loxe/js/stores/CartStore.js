@@ -1,6 +1,6 @@
 'use strict';
 
-import {Store, Bus} from 'Loxe';
+import {Store, Subject} from 'loxe';
 import AppConstants from '../constants/AppConstants';
 import assign from 'object-assign';
 
@@ -17,37 +17,31 @@ export default class CartStore extends Store {
     /**
      * @type {Bus}
      */
-    products$ = Bus.create();
+    products$ = Subject.property(this.getAddedProducts());
 
     /**
      * @type {Bus}
      */
-    total$ = Bus.create();
+    total$ = Subject.property(this.getTotal());
 
     /**
-     * @type {Object<string, function>} dispatchReceiver
      */
-    storeReceiveDispatch(eventType, payload) {
-        switch (eventType) {
-            case ActionTypes.ADD_TO_CART:
-                // TODO
-                //AppDispatcher.waitFor([ProductStore.dispatchToken]);
-                this. _addToCart(payload.product);
+    constructor() {
+        super();
 
-                this.products$.emit(this.getAddedProducts());
-                this.total$.emit(this.getTotal());
-                break;
-            case ActionTypes.CART_CHECKOUT:
-                this._products = {};
-
-                this.products$.emit(this.getAddedProducts());
-                this.total$.emit(this.getTotal());
-                break;
-            case ActionTypes.SUCCESS_CHECKOUT:
-                // this can be used to redirect to success page, etc.
-                console.log('YOU BOUGHT:', payload.products);
-                break;
-        }
+        this.subscribeEvent(ActionTypes.ADD_TO_CART, (payload) => {
+            this. _addToCart(payload.product);
+            this.products$.next(this.getAddedProducts());
+            this.total$.next(this.getTotal());
+        });
+        this.subscribeEvent(ActionTypes.CART_CHECKOUT, (payload) => {
+            this._products = {};
+            this.products$.next(this.getAddedProducts());
+            this.total$.next(this.getTotal());
+        });
+        this.subscribeEvent(ActionTypes.SUCCESS_CHECKOUT, (payload) => {
+            console.log('YOU BOUGHT:', payload.products);
+        });
     }
 
     /**

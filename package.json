@@ -19,6 +19,7 @@
     "flummox": "~2.13.1",
     "flux": "^2.0.3",
     "fluxible": "^0.3.0",
+    "loxe": "^0.4.0-alpha3",
     "lux.js": "^0.7.1",
     "marty": "^0.9.0",
     "material-flux": "^1.1.1",
@@ -26,7 +27,9 @@
     "object-assign": "^2.0.0",
     "react": "^0.13.0",
     "react-router": "^0.13.0",
-    "reflux": "^0.2.4"
+    "reflux": "^0.2.4",
+    "rx-lite": "^2.5.2",
+    "rx.observable.combinetemplate": "^0.2.4"
   },
   "devDependencies": {
     "babel": "^4.7.3",
